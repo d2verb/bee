@@ -21,6 +21,9 @@ func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 
 	switch l.ch {
+	case 0:
+		tok.Literal = ""
+		tok.Type = token.EOF
 	case '\n':
 		tok = newToken(token.NEWLINE, l.ch)
 	case '=':
