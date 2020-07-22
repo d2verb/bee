@@ -9,7 +9,7 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `
 foo_bar 551 = + - * /
-! < == && || ( ) { } , fn if else return while var puts
+! < == && || ( ) { } , fn if else return while puts
 `
 	tests := []struct {
 		expectedType    token.TokenType
@@ -39,7 +39,6 @@ foo_bar 551 = + - * /
 		{token.ELSE, "else"},
 		{token.RETURN, "return"},
 		{token.WHILE, "while"},
-		{token.VAR, "var"},
 		{token.PUTS, "puts"},
 	}
 

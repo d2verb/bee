@@ -8,14 +8,13 @@ type Token struct {
 }
 
 const (
-	ILLEGAL = "ILLEGAL" // unknown keywords
+	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 	NEWLINE = "NEWLINE"
 
 	IDENT = "IDENT"
 	INT   = "INT"
 
-	// operators
 	ASSIGN   = "="
 	PLUS     = "+"
 	MINUS    = "-"
@@ -27,20 +26,17 @@ const (
 	AND      = "&&"
 	OR       = "||"
 
-	// symbols
 	LPAREN = "("
 	RPAREN = ")"
 	LBRACE = "{"
 	RBRACE = "}"
 	COMMA  = ","
 
-	// keywords
 	FN     = "FN"
 	IF     = "IF"
 	ELSE   = "ELSE"
 	RETURN = "RETURN"
 	WHILE  = "WHILE"
-	VAR    = "VAR"
 	PUTS   = "PUTS"
 )
 
@@ -50,7 +46,6 @@ var keywords = map[string]TokenType{
 	"else":   ELSE,
 	"return": RETURN,
 	"while":  WHILE,
-	"var":    VAR,
 	"puts":   PUTS,
 }
 
