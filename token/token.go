@@ -43,3 +43,20 @@ const (
 	VAR    = "VAR"
 	PUTS   = "PUTS"
 )
+
+var keywords = map[string]TokenType{
+	"fn":     FN,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
+	"while":  WHILE,
+	"var":    VAR,
+	"puts":   PUTS,
+}
+
+func LookupIdent(ident string) TokenType {
+	if tok, ok := keywords[ident]; ok {
+		return tok
+	}
+	return IDENT
+}

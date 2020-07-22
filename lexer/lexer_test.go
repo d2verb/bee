@@ -8,7 +8,7 @@ import (
 
 func TestNextToken(t *testing.T) {
 	input := `
-foo_bar1234 551 = + - * /
+foo_bar 551 = + - * /
 ! < == && || ( ) { } , fn if else return while var puts
 `
 	tests := []struct {
@@ -16,7 +16,7 @@ foo_bar1234 551 = + - * /
 		expectedLiteral string
 	}{
 		{token.NEWLINE, "\n"},
-		{token.IDENT, "foo_bar1234"},
+		{token.IDENT, "foo_bar"},
 		{token.INT, "551"},
 		{token.ASSIGN, "="},
 		{token.PLUS, "+"},
@@ -54,7 +54,7 @@ foo_bar1234 551 = + - * /
 
 		if tok.Literal != tt.expectedLiteral {
 			t.Fatalf("tests[%d] - wrong literal. expected=%q, got=%q",
-				i, tt.expectedType, tok.Type)
+				i, tt.expectedLiteral, tok.Literal)
 		}
 	}
 }

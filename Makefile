@@ -8,6 +8,10 @@ build: clean
 run:
 	go run -race main.go
 
+.PHONY: test
+test:
+	go test ./lexer
+
 .PHONY: clean
 clean:
 	go clean
