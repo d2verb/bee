@@ -11,6 +11,8 @@ run:
 .PHONY: test
 test:
 	go test ./lexer
+	go test ./ast
+	go test ./parser
 
 .PHONY: clean
 clean:
