@@ -82,6 +82,11 @@ type ExpressionStatement struct {
 
 func (es *ExpressionStatement) statementNode() {}
 
+// String returns a stringified version of the AST for debugging
+func (es *ExpressionStatement) String() string {
+	return fmt.Sprintf("%s;", es.Expression.String())
+}
+
 // IntegerLiteral represents al literal integer and holds an integer value
 type IntegerLiteral struct {
 	Value int64
@@ -104,6 +109,11 @@ type PrefixExpression struct {
 
 func (pe *PrefixExpression) expressionNode() {}
 
+// String returns a stringified version of the AST for debugging
+func (pe *PrefixExpression) String() string {
+	return fmt.Sprintf("%s(%s)", pe.Operator, pe.Right.String())
+}
+
 // InfixExpression represents an infix expression and holds the left-hand
 // expression, operator and right-hand expression
 // e.g.: 1 + 2
@@ -115,6 +125,7 @@ type InfixExpression struct {
 
 func (ie *InfixExpression) expressionNode() {}
 
+// String returns a stringified version of the AST for debugging
 func (ie *InfixExpression) String() string {
 	return fmt.Sprintf("(%s%s%s)", ie.Left.String(), ie.Operator, ie.Right.String())
 }
@@ -127,6 +138,23 @@ type CallExpression struct {
 }
 
 func (ce *CallExpression) expressionNode() {}
+
+// String returns a stringified version of the AST for debugging
+func (ce *CallExpression) String() string {
+	var out bytes.Buffer
+
+	args := []string{}
+	for _, a := range ce.Arguments {
+		args = append(args, a.String())
+	}
+
+	out.WriteString(ce.Function)
+	out.WriteString("(")
+	out.WriteString(strings.Join(args, ","))
+	out.WriteString(")")
+
+	return out.String()
+}
 
 // BlockStatement represents a block statement and holds one or more other
 // statements
@@ -152,14 +180,14 @@ func (bs *BlockStatement) String() string {
 // ReturnStatement represenets the `return` statement node
 // e.g: return 1234;
 type ReturnStatement struct {
-	ReturnValue Expression
+	Value Expression
 }
 
 func (rs *ReturnStatement) statementNode() {}
 
 // String returns a stringified version of the AST for debugging
 func (rs *ReturnStatement) String() string {
-	return fmt.Sprintf("return %s;", rs.ReturnValue.String())
+	return fmt.Sprintf("return %s;", rs.Value.String())
 }
 
 // IfStatement represents an `if` statement and holds the condition,
@@ -170,7 +198,24 @@ type IfStatement struct {
 	Alternative *BlockStatement
 }
 
-func (ie *IfStatement) statementNode() {}
+func (is *IfStatement) statementNode() {}
+
+// String returns a stringified version of the AST for debugging
+func (is *IfStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("if(")
+	out.WriteString(is.Condition.String())
+	out.WriteString(")")
+	out.WriteString(is.Consequence.String())
+
+	if is.Alternative != nil {
+		out.WriteString("else")
+		out.WriteString(is.Alternative.String())
+	}
+
+	return out.String()
+}
 
 // WhileStatement represents an `while` statement and holds the condition,
 // and consequence expression
@@ -181,6 +226,18 @@ type WhileStatement struct {
 
 func (we *WhileStatement) statementNode() {}
 
+// String returns a stringified version of the AST for debugging
+func (we *WhileStatement) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("while(")
+	out.WriteString(we.Condition.String())
+	out.WriteString(")")
+	out.WriteString(we.Body.String())
+
+	return out.String()
+}
+
 // PutsStatement represents an `puts` statement and holds the argument
 // e.g: puts(1234);
 type PutsStatement struct {
@@ -188,3 +245,8 @@ type PutsStatement struct {
 }
 
 func (ps *PutsStatement) statementNode() {}
+
+// String returns a stringified version of the AST for debugging
+func (ps *PutsStatement) String() string {
+	return fmt.Sprintf("puts %s;", ps.Value.String())
+}

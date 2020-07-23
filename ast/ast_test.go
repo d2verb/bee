@@ -6,7 +6,7 @@ func TestString(t *testing.T) {
 	program := &Program{
 		Functions: []*Function{
 			&Function{
-				Name: "add",
+				Name: "foo",
 				Parameters: []*Identifier{
 					&Identifier{Value: "x"},
 					&Identifier{Value: "y"},
@@ -14,7 +14,7 @@ func TestString(t *testing.T) {
 				Body: &BlockStatement{
 					Statements: []Statement{
 						&ReturnStatement{
-							ReturnValue: &InfixExpression{
+							Value: &InfixExpression{
 								Left:     &Identifier{Value: "x"},
 								Operator: "+",
 								Right:    &Identifier{Value: "y"},
@@ -26,7 +26,7 @@ func TestString(t *testing.T) {
 		},
 	}
 
-	expected := "fn add(x,y){return (x+y);}"
+	expected := "fn foo(x,y){return (x+y);}"
 
 	if program.String() != expected {
 		t.Errorf("program.String() wrong. expected=%q, got=%q", expected, program.String())
