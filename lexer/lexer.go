@@ -2,6 +2,7 @@ package lexer
 
 import "github.com/d2verb/bee/token"
 
+// Lexer represents the lexer and contains the source input and internal state
 type Lexer struct {
 	input        string
 	position     int // current position
@@ -9,12 +10,14 @@ type Lexer struct {
 	ch           byte
 }
 
+// New returns a new Lexer
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
+// NextToken returns the next token read from the input stream
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -35,11 +38,11 @@ func (l *Lexer) NextToken() token.Token {
 	case '-':
 		tok = newToken(token.MINUS, l.ch)
 	case '*':
-		tok = newToken(token.ASTERISK, l.ch)
+		tok = newToken(token.MULTIPLY, l.ch)
 	case '/':
-		tok = newToken(token.SLASH, l.ch)
+		tok = newToken(token.DIVIDE, l.ch)
 	case '!':
-		tok = newToken(token.BANG, l.ch)
+		tok = newToken(token.NOT, l.ch)
 	case '<':
 		tok = newToken(token.LT, l.ch)
 	case '&':
