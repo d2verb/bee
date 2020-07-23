@@ -7,9 +7,9 @@ func TestString(t *testing.T) {
 		Functions: []*Function{
 			&Function{
 				Name: "foo",
-				Parameters: []*Identifier{
-					&Identifier{Value: "x"},
-					&Identifier{Value: "y"},
+				Parameters: []string{
+					"x",
+					"y",
 				},
 				Body: &BlockStatement{
 					Statements: []Statement{

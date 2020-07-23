@@ -118,8 +118,8 @@ func (p *Parser) parseFunction() *ast.Function {
 	return fn
 }
 
-func (p *Parser) parseFunctionParameters() []*ast.Identifier {
-	identifiers := []*ast.Identifier{}
+func (p *Parser) parseFunctionParameters() []string {
+	identifiers := []string{}
 
 	if p.peekTokenIs(token.RPAREN) {
 		p.nextToken()
@@ -128,14 +128,12 @@ func (p *Parser) parseFunctionParameters() []*ast.Identifier {
 
 	p.nextToken()
 
-	ident := &ast.Identifier{Value: p.curToken.Literal}
-	identifiers = append(identifiers, ident)
+	identifiers = append(identifiers, p.curToken.Literal)
 
 	for p.peekTokenIs(token.COMMA) {
 		p.nextToken()
 		if p.expectPeek(token.IDENT) {
-			ident := &ast.Identifier{Value: p.curToken.Literal}
-			identifiers = append(identifiers, ident)
+			identifiers = append(identifiers, p.curToken.Literal)
 		} else {
 			return nil
 		}

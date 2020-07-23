@@ -43,7 +43,7 @@ func (p *Program) String() string {
 // Function is a top level node and represents a function
 type Function struct {
 	Name       string
-	Parameters []*Identifier
+	Parameters []string
 	Body       *BlockStatement
 }
 
@@ -51,14 +51,9 @@ type Function struct {
 func (fn *Function) String() string {
 	var out bytes.Buffer
 
-	params := []string{}
-	for _, p := range fn.Parameters {
-		params = append(params, p.String())
-	}
-
 	out.WriteString(fmt.Sprintf("fn %s", fn.Name))
 	out.WriteString("(")
-	out.WriteString(strings.Join(params, ","))
+	out.WriteString(strings.Join(fn.Parameters, ","))
 	out.WriteString(")")
 	out.WriteString(fn.Body.String())
 
