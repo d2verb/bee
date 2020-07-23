@@ -1,9 +1,11 @@
 package token
 
-type TokenType string
+// Type represents the type of token
+type Type string
 
+// Token holds a single token type and its literal value
 type Token struct {
-	Type    TokenType
+	Type    Type
 	Literal string
 }
 
@@ -26,11 +28,12 @@ const (
 	AND      = "&&"
 	OR       = "||"
 
-	LPAREN = "("
-	RPAREN = ")"
-	LBRACE = "{"
-	RBRACE = "}"
-	COMMA  = ","
+	LPAREN    = "("
+	RPAREN    = ")"
+	LBRACE    = "{"
+	RBRACE    = "}"
+	COMMA     = ","
+	SEMICOLON = ";"
 
 	FN     = "FN"
 	IF     = "IF"
@@ -40,7 +43,7 @@ const (
 	PUTS   = "PUTS"
 )
 
-var keywords = map[string]TokenType{
+var keywords = map[string]Type{
 	"fn":     FN,
 	"if":     IF,
 	"else":   ELSE,
@@ -49,7 +52,7 @@ var keywords = map[string]TokenType{
 	"puts":   PUTS,
 }
 
-func LookupIdent(ident string) TokenType {
+func LookupIdent(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}

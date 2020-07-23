@@ -9,12 +9,11 @@ import (
 func TestNextToken(t *testing.T) {
 	input := `
 foo_bar 551 = + - * /
-! < == && || ( ) { } , fn if else return while puts`
+! < == && || ( ) { } , ; fn if else return while puts`
 	tests := []struct {
-		expectedType    token.TokenType
+		expectedType    token.Type
 		expectedLiteral string
 	}{
-		{token.NEWLINE, "\n"},
 		{token.IDENT, "foo_bar"},
 		{token.INT, "551"},
 		{token.ASSIGN, "="},
@@ -22,7 +21,6 @@ foo_bar 551 = + - * /
 		{token.MINUS, "-"},
 		{token.ASTERISK, "*"},
 		{token.SLASH, "/"},
-		{token.NEWLINE, "\n"},
 		{token.BANG, "!"},
 		{token.LT, "<"},
 		{token.EQ, "=="},
@@ -33,13 +31,14 @@ foo_bar 551 = + - * /
 		{token.LBRACE, "{"},
 		{token.RBRACE, "}"},
 		{token.COMMA, ","},
+		{token.SEMICOLON, ";"},
 		{token.FN, "fn"},
 		{token.IF, "if"},
 		{token.ELSE, "else"},
 		{token.RETURN, "return"},
 		{token.WHILE, "while"},
 		{token.PUTS, "puts"},
-		{token.EOF, ""},
+		{token.EOF, " "},
 	}
 
 	l := New(input)
