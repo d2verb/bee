@@ -13,6 +13,7 @@ test:
 	go test ./lexer
 	go test ./ast
 	go test ./parser
+	go test ./checker
 
 .PHONY: clean
 clean:

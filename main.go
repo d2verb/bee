@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/d2verb/bee/checker"
 	"github.com/d2verb/bee/lexer"
 	"github.com/d2verb/bee/parser"
 )
@@ -20,18 +21,25 @@ func main() {
 		}
 
 		l := lexer.New(string(content))
-		p := parser.New(l)
 
+		p := parser.New(l)
 		program := p.ParseProgram()
 
-		if len(p.Errors()) != 0 {
-			for _, err := range p.Errors() {
+		if errors := p.Errors(); len(errors) != 0 {
+			for _, err := range errors {
 				fmt.Println(err)
 			}
-		} else {
-			for _, function := range program.Functions {
-				fmt.Println(function.String())
+			os.Exit(1)
+		}
+
+		c := checker.New(program)
+		c.Check()
+
+		if errors := c.Errors(); len(errors) != 0 {
+			for _, err := range errors {
+				fmt.Println(err)
 			}
+			os.Exit(1)
 		}
 	}
 }
