@@ -28,7 +28,7 @@ func (c *Checker) Check() {
 		c.variables = make(map[string]struct{})
 
 		for _, parameter := range function.Parameters {
-			c.variables[parameter] = struct{}{}
+			c.variables[parameter.Name] = struct{}{}
 		}
 
 		c.checkBlockStatement(function.Body)

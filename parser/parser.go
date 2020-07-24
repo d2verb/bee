@@ -118,22 +118,22 @@ func (p *Parser) parseFunction() *ast.Function {
 	return fn
 }
 
-func (p *Parser) parseFunctionParameters() []string {
-	identifiers := []string{}
+func (p *Parser) parseFunctionParameters() []*ast.Variable {
+	params := []*ast.Variable{}
 
 	if p.peekTokenIs(token.RPAREN) {
 		p.nextToken()
-		return identifiers
+		return params
 	}
 
 	p.nextToken()
 
-	identifiers = append(identifiers, p.curToken.Literal)
+	params = append(params, &ast.Variable{Name: p.curToken.Literal})
 
 	for p.peekTokenIs(token.COMMA) {
 		p.nextToken()
 		if p.expectPeek(token.IDENT) {
-			identifiers = append(identifiers, p.curToken.Literal)
+			params = append(params, &ast.Variable{Name: p.curToken.Literal})
 		} else {
 			return nil
 		}
@@ -143,7 +143,7 @@ func (p *Parser) parseFunctionParameters() []string {
 		return nil
 	}
 
-	return identifiers
+	return params
 }
 
 func (p *Parser) parseBlockStatement() *ast.BlockStatement {

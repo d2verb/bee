@@ -40,11 +40,17 @@ func (p *Program) String() string {
 	return out.String()
 }
 
+// Variable represents a function parameter and local variable
+type Variable struct {
+	Name string
+}
+
 // Function is a top level node and represents a function
 type Function struct {
 	Name       string
-	Parameters []string
+	Parameters []*Variable
 	Body       *BlockStatement
+	Variables  []*Variable
 }
 
 // String returns a stringified version of the AST for debugging
@@ -53,7 +59,14 @@ func (fn *Function) String() string {
 
 	out.WriteString(fmt.Sprintf("fn %s", fn.Name))
 	out.WriteString("(")
-	out.WriteString(strings.Join(fn.Parameters, ","))
+
+	params := []string{}
+	for _, variable := range fn.Parameters {
+		params = append(params, variable.Name)
+	}
+
+	out.WriteString(strings.Join(params, ","))
+
 	out.WriteString(")")
 	out.WriteString(fn.Body.String())
 
