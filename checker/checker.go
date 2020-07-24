@@ -6,33 +6,55 @@ import (
 	"github.com/d2verb/bee/ast"
 )
 
-type Checker struct {
-	program   *ast.Program
-	functions map[string]int
+// Context represents context of semantic checker
+type Context struct {
+	function  *ast.Function
 	variables map[string]struct{}
-	errors    []string
 }
 
+// Checker represents a semantic checker
+type Checker struct {
+	program    *ast.Program
+	signatures map[string]int
+	context    Context
+	errors     []string
+}
+
+// New returns a new Checker
 func New(program *ast.Program) *Checker {
 	c := &Checker{
-		program:   program,
-		functions: make(map[string]int),
-		errors:    []string{},
+		program:    program,
+		signatures: make(map[string]int),
+		errors:     []string{},
 	}
 	return c
 }
 
+// Check does some semantic checking
 func (c *Checker) Check() {
-	c.findFunctions()
-	for _, function := range c.program.Functions {
-		c.variables = make(map[string]struct{})
+	c.checkFunctionSignature()
 
-		for _, parameter := range function.Parameters {
-			c.variables[parameter.Name] = struct{}{}
-		}
-
-		c.checkBlockStatement(function.Body)
+	if len(c.errors) != 0 {
+		return
 	}
+
+	for _, function := range c.program.Functions {
+		c.checkFunction(function)
+
+		if len(c.errors) != 0 {
+			return
+		}
+	}
+}
+
+func (c *Checker) checkFunction(function *ast.Function) {
+	c.newContext(function)
+
+	for _, parameter := range function.Parameters {
+		c.context.variables[parameter.Name] = struct{}{}
+	}
+
+	c.checkBlockStatement(function.Body)
 }
 
 func (c *Checker) checkBlockStatement(node *ast.BlockStatement) {
@@ -90,7 +112,7 @@ func (c *Checker) checkExpression(node ast.Expression) {
 			c.errors = append(c.errors, msg)
 			return
 		}
-		count, _ := c.functions[node.Function]
+		count, _ := c.signatures[node.Function]
 		if len(node.Arguments) != count {
 			msg := fmt.Sprintf("the number of arguments for '%s' is not correct. expect=%d, got=%d",
 				node.Function,
@@ -110,31 +132,58 @@ func (c *Checker) checkExpression(node ast.Expression) {
 	}
 }
 
+// Errors return errors of checker
 func (c *Checker) Errors() []string {
 	return c.errors
 }
 
-func (c *Checker) findFunctions() {
+func (c *Checker) checkFunctionSignature() {
 	for _, function := range c.program.Functions {
-		c.functions[function.Name] = len(function.Parameters)
+		if c.checkDuplicatedParameterExists(function) {
+			return
+		}
+		c.signatures[function.Name] = len(function.Parameters)
 	}
 }
 
+func (c *Checker) checkDuplicatedParameterExists(function *ast.Function) bool {
+	parameters := map[string]struct{}{}
+	for _, parameter := range function.Parameters {
+		if _, ok := parameters[parameter.Name]; ok {
+			msg := fmt.Sprintf("duplicated parameter '%s' in function '%s'", parameter.Name, function.Name)
+			c.errors = append(c.errors, msg)
+			return true
+		}
+		parameters[parameter.Name] = struct{}{}
+	}
+	return false
+}
+
+func (c *Checker) newContext(function *ast.Function) {
+	c.context = Context{
+		function:  function,
+		variables: make(map[string]struct{}),
+	}
+
+}
+
 func (c *Checker) isFunctionExists(functionName string) bool {
-	_, ok := c.functions[functionName]
+	_, ok := c.signatures[functionName]
 	return ok
 }
 
 func (c *Checker) isVariableExists(variableName string) bool {
-	_, ok := c.variables[variableName]
+	_, ok := c.context.variables[variableName]
 	return ok
 }
 
 func (c *Checker) parameterCount(functionName string) int {
-	count, _ := c.functions[functionName]
+	count, _ := c.signatures[functionName]
 	return count
 }
 
 func (c *Checker) registerVariable(variableName string) {
-	c.variables[variableName] = struct{}{}
+	c.context.variables[variableName] = struct{}{}
+	c.context.function.Variables = append(c.context.function.Variables,
+		&ast.Variable{Name: variableName})
 }

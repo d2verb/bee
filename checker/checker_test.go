@@ -40,6 +40,14 @@ func TestChecker(t *testing.T) {
 				"function 'bar' is not defined",
 			},
 		},
+		{
+
+			// Check stopped at first function
+			"fn main(x, x) {} fn foo(x, x) { main(1); }",
+			[]string{
+				"duplicated parameter 'x' in function 'main'",
+			},
+		},
 	}
 
 	for i, tt := range tests {
