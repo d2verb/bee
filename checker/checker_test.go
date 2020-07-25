@@ -87,17 +87,21 @@ func TestVariableCreation(t *testing.T) {
 
 	function := program.Functions[0]
 
-	if len(function.Variables) != 2 {
-		t.Errorf("the number of local variable should be 1, but got %d", len(function.Variables))
+	if len(function.Variables) != 4 {
+		t.Errorf("the number of local variable should be 4, but got %d", len(function.Variables))
 	}
 
-	variables := function.Variables
-
-	if variables[0].Name != "z" {
-		t.Errorf("the first variable name should be 'z', but got %d", len(variables[0].Name))
+	for i, expectedName := range []string{"x", "y", "z", "s"} {
+		if function.Variables[i].Name != expectedName {
+			t.Errorf("name of variables[%d] should be '%s', but got '%s",
+				i, expectedName, function.Variables[i].Name)
+		}
 	}
 
-	if variables[1].Name != "s" {
-		t.Errorf("the second variable name should be 's', but got %d", len(variables[0].Name))
+	for i := 0; i < 2; i++ {
+		if function.Variables[i] != function.Parameters[i] {
+			t.Errorf("variables[%d] = %s should equal to parameters[%d] = %s",
+				i, function.Variables[i].Name, i, function.Parameters[i].Name)
+		}
 	}
 }

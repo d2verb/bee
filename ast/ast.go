@@ -50,8 +50,8 @@ type Variable struct {
 type Function struct {
 	Name       string
 	Parameters []*Variable
-	Body       *BlockStatement
 	Variables  []*Variable
+	Body       *BlockStatement
 }
 
 // String returns a stringified version of the AST for debugging

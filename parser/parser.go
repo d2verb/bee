@@ -97,7 +97,10 @@ func (p *Parser) ParseProgram() *ast.Program {
 }
 
 func (p *Parser) parseFunction() *ast.Function {
-	fn := &ast.Function{}
+	fn := &ast.Function{
+		Parameters: []*ast.Variable{},
+		Variables:  []*ast.Variable{},
+	}
 
 	if !p.expectPeek(token.IDENT) {
 		return nil
@@ -109,7 +112,7 @@ func (p *Parser) parseFunction() *ast.Function {
 		return nil
 	}
 
-	fn.Parameters = p.parseFunctionParameters()
+	p.parseFunctionParameters(fn)
 
 	if !p.expectPeek(token.LBRACE) {
 		return nil
@@ -120,7 +123,7 @@ func (p *Parser) parseFunction() *ast.Function {
 	return fn
 }
 
-func (p *Parser) parseFunctionParameters() []*ast.Variable {
+func (p *Parser) parseFunctionParameters(fn *ast.Function) []*ast.Variable {
 	params := []*ast.Variable{}
 
 	if p.peekTokenIs(token.RPAREN) {
@@ -130,12 +133,18 @@ func (p *Parser) parseFunctionParameters() []*ast.Variable {
 
 	p.nextToken()
 
-	params = append(params, &ast.Variable{Name: p.curToken.Literal})
+	variable := &ast.Variable{Name: p.curToken.Literal}
+
+	fn.Parameters = append(fn.Parameters, variable)
+	fn.Variables = append(fn.Variables, variable)
 
 	for p.peekTokenIs(token.COMMA) {
 		p.nextToken()
 		if p.expectPeek(token.IDENT) {
-			params = append(params, &ast.Variable{Name: p.curToken.Literal})
+			variable := &ast.Variable{Name: p.curToken.Literal}
+
+			fn.Parameters = append(fn.Parameters, variable)
+			fn.Variables = append(fn.Variables, variable)
 		} else {
 			return nil
 		}
