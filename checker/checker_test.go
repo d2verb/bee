@@ -74,3 +74,30 @@ func TestChecker(t *testing.T) {
 		}
 	}
 }
+
+func TestVariableCreation(t *testing.T) {
+	input := "fn main(x, y) { x = y; z = 6; x = z; s = z; }"
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+
+	c := New(program)
+	c.Check()
+
+	function := program.Functions[0]
+
+	if len(function.Variables) != 2 {
+		t.Errorf("the number of local variable should be 1, but got %d", len(function.Variables))
+	}
+
+	variables := function.Variables
+
+	if variables[0].Name != "z" {
+		t.Errorf("the first variable name should be 'z', but got %d", len(variables[0].Name))
+	}
+
+	if variables[1].Name != "s" {
+		t.Errorf("the second variable name should be 's', but got %d", len(variables[0].Name))
+	}
+}

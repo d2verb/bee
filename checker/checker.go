@@ -9,7 +9,7 @@ import (
 // Context represents context of semantic checker
 type Context struct {
 	function  *ast.Function
-	variables map[string]struct{}
+	variables map[string]*ast.Variable
 }
 
 // Checker represents a semantic checker
@@ -51,7 +51,7 @@ func (c *Checker) checkFunction(function *ast.Function) {
 	c.newContext(function)
 
 	for _, parameter := range function.Parameters {
-		c.context.variables[parameter.Name] = struct{}{}
+		c.context.variables[parameter.Name] = parameter
 	}
 
 	c.checkBlockStatement(function.Body)
@@ -99,7 +99,11 @@ func (c *Checker) checkExpression(node ast.Expression) {
 	case *ast.InfixExpression:
 		if node.Operator == "=" {
 			c.checkExpression(node.Right)
-			c.registerVariable(node.Left.(*ast.Identifier).Name)
+
+			ident := node.Left.(*ast.Identifier)
+			if !c.isVariableExists(ident.Name) {
+				ident.Var = c.registerVariable(ident.Name)
+			}
 		} else {
 			c.checkExpression(node.Left)
 			c.checkExpression(node.Right)
@@ -129,6 +133,8 @@ func (c *Checker) checkExpression(node ast.Expression) {
 			msg := fmt.Sprintf("variable '%s' is not defined", node.Name)
 			c.errors = append(c.errors, msg)
 		}
+		variable, _ := c.context.variables[node.Name]
+		node.Var = variable
 	}
 }
 
@@ -162,7 +168,7 @@ func (c *Checker) checkDuplicatedParameterExists(function *ast.Function) bool {
 func (c *Checker) newContext(function *ast.Function) {
 	c.context = Context{
 		function:  function,
-		variables: make(map[string]struct{}),
+		variables: make(map[string]*ast.Variable),
 	}
 
 }
@@ -182,8 +188,11 @@ func (c *Checker) parameterCount(functionName string) int {
 	return count
 }
 
-func (c *Checker) registerVariable(variableName string) {
-	c.context.variables[variableName] = struct{}{}
-	c.context.function.Variables = append(c.context.function.Variables,
-		&ast.Variable{Name: variableName})
+func (c *Checker) registerVariable(variableName string) *ast.Variable {
+	variable := &ast.Variable{Name: variableName}
+
+	c.context.variables[variableName] = variable
+	c.context.function.Variables = append(c.context.function.Variables, variable)
+
+	return variable
 }
