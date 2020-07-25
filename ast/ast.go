@@ -42,7 +42,8 @@ func (p *Program) String() string {
 
 // Variable represents a function parameter and local variable
 type Variable struct {
-	Name string
+	Name   string
+	Offset int
 }
 
 // Function is a top level node and represents a function
@@ -75,13 +76,14 @@ func (fn *Function) String() string {
 
 // Identifier represents an identifier and holds the name of the identifier
 type Identifier struct {
-	Value string
+	Name string
+	Var  *Variable
 }
 
 func (id *Identifier) expressionNode() {}
 
 // String returns a stringified version of the AST for debugging
-func (id *Identifier) String() string { return id.Value }
+func (id *Identifier) String() string { return id.Name }
 
 // ExpressionStatement represents an expression statement and holds an expression
 type ExpressionStatement struct {

@@ -15,9 +15,9 @@ func TestString(t *testing.T) {
 					Statements: []Statement{
 						&ReturnStatement{
 							Value: &InfixExpression{
-								Left:     &Identifier{Value: "x"},
+								Left:     &Identifier{Name: "x"},
 								Operator: "+",
-								Right:    &Identifier{Value: "y"},
+								Right:    &Identifier{Name: "y"},
 							},
 						},
 					},

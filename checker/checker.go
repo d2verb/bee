@@ -99,7 +99,7 @@ func (c *Checker) checkExpression(node ast.Expression) {
 	case *ast.InfixExpression:
 		if node.Operator == "=" {
 			c.checkExpression(node.Right)
-			c.registerVariable(node.Left.(*ast.Identifier).Value)
+			c.registerVariable(node.Left.(*ast.Identifier).Name)
 		} else {
 			c.checkExpression(node.Left)
 			c.checkExpression(node.Right)
@@ -125,8 +125,8 @@ func (c *Checker) checkExpression(node ast.Expression) {
 			c.checkExpression(argument)
 		}
 	case *ast.Identifier:
-		if !c.isVariableExists(node.Value) {
-			msg := fmt.Sprintf("variable '%s' is not defined", node.Value)
+		if !c.isVariableExists(node.Name) {
+			msg := fmt.Sprintf("variable '%s' is not defined", node.Name)
 			c.errors = append(c.errors, msg)
 		}
 	}

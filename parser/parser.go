@@ -40,6 +40,7 @@ type (
 	infixParseFn  func(ast.Expression) ast.Expression
 )
 
+// Parser represents a parser and contains the internal state
 type Parser struct {
 	l      *lexer.Lexer
 	errors []string
@@ -51,6 +52,7 @@ type Parser struct {
 	infixParseFns  map[token.Type]infixParseFn
 }
 
+// New creates a new parser
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
 		l:      l,
@@ -291,7 +293,7 @@ func (p *Parser) parseExpression(precedence int) ast.Expression {
 }
 
 func (p *Parser) parseIdentifier() ast.Expression {
-	return &ast.Identifier{Value: p.curToken.Literal}
+	return &ast.Identifier{Name: p.curToken.Literal}
 }
 
 func (p *Parser) parseIntegerLiteral() ast.Expression {
@@ -362,7 +364,7 @@ func (p *Parser) parseCallExpression(function ast.Expression) ast.Expression {
 
 	switch node := function.(type) {
 	case *ast.Identifier:
-		exp.Function = node.Value
+		exp.Function = node.Name
 		break
 	default:
 		msg := fmt.Sprintf("only identifier is allowed to call")
