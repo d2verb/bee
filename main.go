@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/d2verb/bee/generator"
+
 	"github.com/d2verb/bee/checker"
 	"github.com/d2verb/bee/lexer"
 	"github.com/d2verb/bee/parser"
@@ -41,5 +43,10 @@ func main() {
 			}
 			os.Exit(1)
 		}
+
+		generator := generator.New(program)
+		irProgram := generator.Generate()
+
+		fmt.Print(irProgram.String())
 	}
 }

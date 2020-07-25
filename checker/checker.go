@@ -101,9 +101,7 @@ func (c *Checker) checkExpression(node ast.Expression) {
 			c.checkExpression(node.Right)
 
 			ident := node.Left.(*ast.Identifier)
-			if !c.isVariableExists(ident.Name) {
-				ident.Var = c.registerVariable(ident.Name)
-			}
+			ident.Var = c.registerVariable(ident.Name)
 		} else {
 			c.checkExpression(node.Left)
 			c.checkExpression(node.Right)
@@ -189,6 +187,10 @@ func (c *Checker) parameterCount(functionName string) int {
 }
 
 func (c *Checker) registerVariable(variableName string) *ast.Variable {
+	if variable, ok := c.context.variables[variableName]; ok {
+		return variable
+	}
+
 	variable := &ast.Variable{Name: variableName}
 
 	c.context.variables[variableName] = variable
