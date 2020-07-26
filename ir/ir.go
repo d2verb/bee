@@ -58,6 +58,8 @@ func (reg *Register) String() string {
 type BasicBlock struct {
 	Label int
 	Irs   []Ir
+	Succs []*BasicBlock
+	Preds []*BasicBlock
 }
 
 func (bb *BasicBlock) String() string {
@@ -218,3 +220,20 @@ func (ir *StoreArgIr) ir() {}
 func (ir *StoreArgIr) String() string {
 	return fmt.Sprintf("STORE_ARG %d %s", ir.Index, ir.Var.Name)
 }
+
+// MovIr represents `MOV R0 R1`
+type MovIr struct {
+	R0 *Register
+	R1 *Register
+}
+
+func (ir *MovIr) ir() {}
+func (ir *MovIr) String() string {
+	return fmt.Sprintf("MOV r%d r%d", ir.R0.VirtualNo, ir.R1.VirtualNo)
+}
+
+// NopIr represents `NOP`
+type NopIr struct{}
+
+func (ir *NopIr) ir()            {}
+func (ir *NopIr) String() string { return "NOP" }

@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/d2verb/bee/optimizer"
+
 	"github.com/d2verb/bee/generator"
 
 	"github.com/d2verb/bee/checker"
@@ -46,6 +48,8 @@ func main() {
 
 		generator := generator.New(program)
 		irProgram := generator.Generate()
+
+		optimizer.LocalOptimize(irProgram)
 
 		fmt.Print(irProgram.String())
 	}

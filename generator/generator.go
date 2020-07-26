@@ -31,9 +31,18 @@ func (ig *IrGenerator) Generate() *ir.Program {
 	for _, function := range ig.program.Functions {
 		ig.function = &ir.Function{Node: function}
 
+		// empty basic block to making analysis easy
 		ig.setCurrentBasicBlock(ig.newBasicBlock())
+		bb := ig.newBasicBlock()
+		ig.jmp(bb)
+
+		// actually function entry point
+		ig.setCurrentBasicBlock(bb)
 		ig.generateStoreArguments(function.Parameters)
 		ig.generateStatement(function.Body)
+
+		// always return 0 at the end of function
+		ig.ret(ig.imm(0))
 
 		program.Functions = append(program.Functions, ig.function)
 	}
